@@ -1,3 +1,16 @@
 #!/bin/sh
 
-echo $HOME
+command_exists_yarn() {
+  command -v "yarn" >/dev/null 2>&1;
+}
+
+
+if command_exists_yarn; then
+	echo "exists"
+	sigint=$?
+else
+	>&2 echo "sYarn requires yarn to be installed."
+	sigint=1
+fi
+
+exit $sigint
