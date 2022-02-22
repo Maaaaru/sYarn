@@ -1,15 +1,22 @@
 #!/bin/sh
+support_os="Darwin"
+basedir=$(dirname "$(readlink "$0" || echo "$argv0")")
 
-command_exists_yarn() {
-  command -v "yarn" >/dev/null 2>&1;
+
+if [ $(uname -s) == $support_os ]; then
+  basedir="$( cd "$( dirname "$argv0" )" && pwd )"
+else
+	echo "Currently only support Darwin OS, other OS under development..."
+fi
+
+validate_command_exists() {
+  command -v "$1" >/dev/null 2>&1;
 }
 
-
-if command_exists_yarn; then
-	echo "exists"
+if validate_command_exists yarn && validate_command_exists node; then
 	sigint=$?
 else
-	>&2 echo "sYarn requires yarn to be installed."
+	>&2 echo "sYarn requires Yarn and Node.js to be installed."
 	sigint=1
 fi
 
