@@ -16,7 +16,7 @@ check_command_exists() {
 
 check_version_yarn() {
 	version=$(yarn -v | awk -F. '{printf "%2d%02d%02d", $1,$2,$3}')
-	echo `echo "$version >= 12000" | bc`
+	echo `echo "$version >= 11000" | bc`
 }
 
 check_version_node() {
@@ -24,9 +24,9 @@ check_version_node() {
 	echo `echo "$version >= 48000" | bc`
 }
 
-if check_command_exists yarna && check_command_exists node; then
+if check_command_exists yarn && check_command_exists node; then
 	if [ `check_version_yarn` -eq 0 ]; then
-		echo "sYarn requires Yarn 1.30.0 or higher version to be installed."
+		echo "sYarn requires Yarn 1.10.0 or higher version to be installed."
 		sigint=1
 	elif [ `check_version_node` -eq 0 ]; then
 		echo "sYarn requires Node.js 4.8.0 or higher version to be installed."
