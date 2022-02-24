@@ -33,7 +33,7 @@ if check_command_exists yarn && check_command_exists node; then
 		sigint=1
 	else
 		sigint=$?
-		exec node "$basedir/bin/syarn.js"
+		exec node "$basedir/src/cli/index.js"
 	fi
 else
 	>&2 echo "sYarn requires Yarn and Node.js to be installed."
