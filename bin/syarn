@@ -7,14 +7,34 @@ if [ $(uname -s) == $support_os ]; then
   basedir="$( cd "$( dirname "$argv0" )" && pwd )"
 else
 	echo "Currently only support Darwin OS, other OS under development..."
+	exit 1
 fi
 
-validate_command_exists() {
+check_command_exists() {
   command -v "$1" >/dev/null 2>&1;
 }
 
-if validate_command_exists yarn && validate_command_exists node; then
-	sigint=$?
+check_version_yarn() {
+	version=$(yarn -v | awk -F. '{printf "%2d%02d%02d", $1,$2,$3}')
+	echo `echo "$version >= 12000" | bc`
+}
+
+check_version_node() {
+	version=$(node -v | awk -F [v.] '{printf "%2d%02d%02d", $2,$3,$4}')
+	echo `echo "$version >= 48000" | bc`
+}
+
+if check_command_exists yarna && check_command_exists node; then
+	if [ `check_version_yarn` -eq 0 ]; then
+		echo "sYarn requires Yarn 1.30.0 or higher version to be installed."
+		sigint=1
+	elif [ `check_version_node` -eq 0 ]; then
+		echo "sYarn requires Node.js 4.8.0 or higher version to be installed."
+		sigint=1
+	else
+		sigint=$?
+		exec node "$basedir/bin/syarn.js"
+	fi
 else
 	>&2 echo "sYarn requires Yarn and Node.js to be installed."
 	sigint=1
