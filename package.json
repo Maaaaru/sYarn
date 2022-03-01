@@ -6,7 +6,7 @@
   "author": "Maaaaru",
   "license": "MIT",
   "scripts": {
-    "gulp": "gulp"
+    "gulp": "npx gulp babel"
   },
   "dependencies": {
     "commander": "^9.0.0"
