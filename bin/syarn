@@ -6,7 +6,7 @@ basedir=$(dirname "$(readlink "$0" || echo "$argv0")")
 if [ $(uname -s) == $support_os ]; then
   basedir="$( cd "$( dirname "$argv0" )" && pwd )"
 else
-	echo "Currently only support Darwin OS, other OS under development..."
+	echo "Currently, only Darwin is supported, but other operating systems are currently under development. Please wait a little longer."
 	exit 1
 fi
 
@@ -33,7 +33,7 @@ if exists_command yarn && exists_command node; then
 		sigint=1
 	else
 		sigint=$?
-		exec node "$basedir/src/cli/index.js" "$@"
+		exec node "$basedir/dist/cli/index.js" "$@"
 	fi
 else
 	>&2 echo "sYarn requires Yarn and Node.js to be installed."
