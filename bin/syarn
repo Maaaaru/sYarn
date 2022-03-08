@@ -6,7 +6,7 @@ basedir=$(dirname "$(readlink "$0" || echo "$argv0")")
 if [ $(uname -s) == $support_os ]; then
   basedir="$( cd "$( dirname "$argv0" )" && pwd )"
 else
-	echo "Currently, only Darwin is supported, but other operating systems are currently under development. Please wait a little longer."
+	echo "Currently the only supported OS is Dawin, but I'm plan to support a variety of OS in the future!"
 	exit 1
 fi
 
@@ -14,30 +14,30 @@ exists_command() {
   command -v "$1" >/dev/null 2>&1;
 }
 
-check_version_yarn() {
+confirm_yarn_version() {
 	version=$(yarn -v | awk -F. '{printf "%2d%02d%02d", $1,$2,$3}')
 	echo `echo "$version >= 11000" | bc`
 }
 
-check_version_node() {
+confirm_node_version() {
 	version=$(node -v | awk -F [v.] '{printf "%2d%02d%02d", $2,$3,$4}')
 	echo `echo "$version >= 48000" | bc`
 }
 
-if exists_command yarn && exists_command node; then
-	if [ `check_version_yarn` -eq 0 ]; then
-		echo "sYarn requires Yarn 1.10.0 or higher version to be installed."
-		sigint=1
-	elif [ `check_version_node` -eq 0 ]; then
-		echo "sYarn requires Node.js 4.8.0 or higher version to be installed."
-		sigint=1
-	else
-		sigint=$?
-		exec node "$basedir/dist/cli/index.js" "$@"
-	fi
-else
+if ! exists_command yarn || ! exists_command node; then
 	>&2 echo "sYarn requires Yarn and Node.js to be installed."
 	sigint=1
+fi
+
+if [ `confirm_yarn_version` -eq 0 ]; then
+	echo "sYarn requires Yarn 1.10.0 or higher version to be installed."
+	sigint=1
+elif [ `confirm_node_version` -eq 0 ]; then
+	echo "sYarn requires Node.js 4.8.0 or higher version to be installed."
+	sigint=1
+else
+	sigint=$?
+	exec node "$basedir/dist/cli/index.js" "$@"
 fi
 
 exit $sigint
